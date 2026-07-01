@@ -3,6 +3,22 @@ class Tree
     @root = build_tree(numeric_array)
   end
 
+  def include?(value)
+    current_node = @root
+
+    until current_node.nil?
+      if value == current_node
+        return true
+      elsif value < current_node
+        current_node = current_node.left
+      elsif value > current_node
+        current_node = current_node.right
+      end
+    end
+
+    false
+  end
+
   private
 
   def build_tree(numeric_array)
