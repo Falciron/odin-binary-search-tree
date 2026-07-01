@@ -19,6 +19,31 @@ class Tree
     false
   end
 
+  def insert(value)
+    return if include?(value)
+
+    if @root.nil?
+      @root = Node.new(value)
+      return
+    end
+
+    parent_node = @root
+
+    loop do
+      if value < parent_node && !parent_node.left.nil?
+        parent_node = parent_node.left
+      elsif value > parent_node && !parent_node.right.nil?
+        parent_node = parent_node.right
+      elsif value < parent_node
+        parent_node.left = Node.new(value)
+        return
+      else
+        parent_node.right = Node.new(value)
+        return
+      end
+    end
+  end
+
   private
 
   def build_tree(numeric_array)
