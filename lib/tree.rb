@@ -9,19 +9,7 @@ class Tree
   end
 
   def include?(value)
-    current_node = @root
-
-    until current_node.nil?
-      if value == current_node.data
-        return true
-      elsif value < current_node.data
-        current_node = current_node.left
-      elsif value > current_node.data
-        current_node = current_node.right
-      end
-    end
-
-    false
+    !find_node_with_value(value).nil?
   end
 
   def insert(value)
@@ -91,6 +79,10 @@ class Tree
   end
 
   def height(value)
+    node_with_value = find_node_with_value(value)
+    return if node_with_value.nil?
+
+    node_height_recursive(node_with_value, 0)
   end
 
   def depth(value)
@@ -159,5 +151,27 @@ class Tree
     postorder_recursive(root_node.left, &block) unless root_node.left.nil?
     postorder_recursive(root_node.right, &block) unless root_node.right.nil?
     yield root_node.data
+  end
+
+  def node_height_recursive(root_node, maximum_height)
+    left_height = root_node.left.nil? ? 0 : 1 + node_height_recursive(root_node.left, maximum_height)
+    right_height = root_node.right.nil? ? 0 : 1 + node_height_recursive(root_node.right, maximum_height)
+    [left_height, right_height].max
+  end
+
+  def find_node_with_value(value)
+    current_node = @root
+
+    until current_node.nil?
+      if value == current_node.data
+        return current_node
+      elsif value < current_node.data
+        current_node = current_node.left
+      elsif value > current_node.data
+        current_node = current_node.right
+      end
+    end
+
+    nil
   end
 end
