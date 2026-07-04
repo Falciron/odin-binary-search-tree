@@ -57,7 +57,7 @@ class Tree
     nodes_to_visit = [@root]
     until nodes_to_visit.empty?
       current_numeric = nodes_to_visit.shift
-      yield current_numeric
+      yield current_numeric.data
 
       nodes_to_visit << current_numeric.left unless current_numeric.left.nil?
       nodes_to_visit << current_numeric.right unless current_numeric.right.nil?
@@ -66,7 +66,13 @@ class Tree
     self
   end
 
-  def inorder; end
+  def inorder(&block)
+    return to_enum(:inorder) unless block_given?
+
+    inorder_recursive(@root, &block)
+
+    self
+  end
 
   def preorder; end
 
@@ -123,5 +129,11 @@ class Tree
     root.right = build_tree_recursive(numeric_array, mid_numeric + 1, last_numeric)
 
     root
+  end
+
+  def inorder_recursive(root_node, &block)
+    inorder_recursive(root_node.left, &block) unless root_node.left.nil?
+    yield root_node.data
+    inorder_recursive(root_node.right, &block) unless root_node.right.nil?
   end
 end
