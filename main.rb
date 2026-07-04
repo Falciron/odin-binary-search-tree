@@ -11,3 +11,7 @@ p test_tree.depth(numerical_array[2])
 test_tree.level_order { |node_data| print "#{node_data}, " }
 puts "\n---"
 test_tree.inorder { |node_data| print "#{node_data}, " }
+puts "\n---"
+test_tree.preorder { |node_data| print "#{node_data}, " }
+puts "\n---"
+test_tree.postorder { |node_data| print "#{node_data}, " }

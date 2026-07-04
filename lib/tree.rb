@@ -74,9 +74,21 @@ class Tree
     self
   end
 
-  def preorder; end
+  def preorder(&block)
+    return to_enum(:preorder) unless block_given?
 
-  def postorder; end
+    preorder_recursive(@root, &block)
+
+    self
+  end
+
+  def postorder(&block)
+    return to_enum(:preorder) unless block_given?
+
+    postorder_recursive(@root, &block)
+
+    self
+  end
 
   def height(value)
   end
@@ -135,5 +147,17 @@ class Tree
     inorder_recursive(root_node.left, &block) unless root_node.left.nil?
     yield root_node.data
     inorder_recursive(root_node.right, &block) unless root_node.right.nil?
+  end
+
+  def preorder_recursive(root_node, &block)
+    yield root_node.data
+    preorder_recursive(root_node.left, &block) unless root_node.left.nil?
+    preorder_recursive(root_node.right, &block) unless root_node.right.nil?
+  end
+
+  def postorder_recursive(root_node, &block)
+    postorder_recursive(root_node.left, &block) unless root_node.left.nil?
+    postorder_recursive(root_node.right, &block) unless root_node.right.nil?
+    yield root_node.data
   end
 end
