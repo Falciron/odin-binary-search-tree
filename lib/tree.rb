@@ -96,7 +96,19 @@ class Tree
   private
 
   def build_tree(numeric_array)
-    numeric_array.each { |numeric_value| insert(numeric_value) }
-    @root
+    sorted_unique_array = numeric_array.sort.uniq
+    build_tree_recursive(sorted_unique_array, 0, numeric_array.size - 1)
+  end
+
+  def build_tree_recursive(numeric_array, first_int, last_int)
+    return if first_int > last_int
+
+    mid_int = (first_int + ((last_int - first_int) / 2)).to_i
+
+    root = Node.new(numeric_array[mid_int])
+    root.left = build_tree_recursive(numeric_array, first_int, mid_int - 1)
+    root.right = build_tree_recursive(numeric_array, mid_int + 1, last_int)
+
+    root
   end
 end
