@@ -51,7 +51,20 @@ class Tree
 
   def delete(value); end
 
-  def level_order; end
+  def level_order
+    return to_enum(:level_order) unless block_given?
+
+    nodes_to_visit = [@root]
+    until nodes_to_visit.empty?
+      current_numeric = nodes_to_visit.shift
+      yield current_numeric
+
+      nodes_to_visit << current_numeric.left unless current_numeric.left.nil?
+      nodes_to_visit << current_numeric.right unless current_numeric.right.nil?
+    end
+
+    self
+  end
 
   def inorder; end
 
@@ -97,17 +110,17 @@ class Tree
 
   def build_tree(numeric_array)
     sorted_unique_array = numeric_array.sort.uniq
-    build_tree_recursive(sorted_unique_array, 0, numeric_array.size - 1)
+    build_tree_recursive(sorted_unique_array, 0, sorted_unique_array.size - 1)
   end
 
-  def build_tree_recursive(numeric_array, first_int, last_int)
-    return if first_int > last_int
+  def build_tree_recursive(numeric_array, first_numeric, last_numeric)
+    return if first_numeric > last_numeric
 
-    mid_int = (first_int + ((last_int - first_int) / 2)).to_i
+    mid_numeric = (first_numeric + ((last_numeric - first_numeric) / 2)).to_i
+    root = Node.new(numeric_array[mid_numeric])
 
-    root = Node.new(numeric_array[mid_int])
-    root.left = build_tree_recursive(numeric_array, first_int, mid_int - 1)
-    root.right = build_tree_recursive(numeric_array, mid_int + 1, last_int)
+    root.left = build_tree_recursive(numeric_array, first_numeric, mid_numeric - 1)
+    root.right = build_tree_recursive(numeric_array, mid_numeric + 1, last_numeric)
 
     root
   end

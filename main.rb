@@ -8,3 +8,4 @@ test_tree = Tree.new(numerical_array)
 test_tree.pretty_print
 p test_tree.include?(12)
 p test_tree.depth(numerical_array[2])
+test_tree.level_order { |node| print "#{node.data}, " }
