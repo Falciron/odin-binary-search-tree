@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
 require_relative 'node'
 
+# Represents a binary search tree data structure.
 class Tree
   def initialize(numeric_array)
     @root = build_tree(numeric_array)
@@ -46,6 +49,42 @@ class Tree
     end
   end
 
+  def delete(value); end
+
+  def level_order; end
+
+  def inorder; end
+
+  def preorder; end
+
+  def postorder; end
+
+  def height(value)
+  end
+
+  def depth(value)
+    depth = 0
+    current_node = @root
+
+    until current_node.nil?
+      if value == current_node.data
+        return depth
+      elsif value < current_node.data
+        current_node = current_node.left
+      elsif value > current_node.data
+        current_node = current_node.right
+      end
+
+      depth += 1
+    end
+
+    nil
+  end
+
+  def balanced?; end
+
+  def rebalance; end
+
   def pretty_print(node = @root, prefix = '', is_left: true)
     return unless node
 
@@ -58,6 +97,6 @@ class Tree
 
   def build_tree(numeric_array)
     numeric_array.each { |numeric_value| insert(numeric_value) }
-    return @root
+    @root
   end
 end

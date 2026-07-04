@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# Represents a single node within a binary search tree.
 class Node
   attr_accessor :data, :left, :right
 
