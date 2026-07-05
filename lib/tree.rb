@@ -104,7 +104,9 @@ class Tree
     nil
   end
 
-  def balanced?; end
+  def balanced?
+    balanced_recursive(@root)
+  end
 
   def rebalance; end
 
@@ -154,9 +156,20 @@ class Tree
   end
 
   def node_height_recursive(root_node, maximum_height)
+    return 0 if root_node.nil?
+
     left_height = root_node.left.nil? ? 0 : 1 + node_height_recursive(root_node.left, maximum_height)
     right_height = root_node.right.nil? ? 0 : 1 + node_height_recursive(root_node.right, maximum_height)
     [left_height, right_height].max
+  end
+
+  def balanced_recursive(root_node)
+    return true if root_node.left.nil? && root_node.right.nil?
+
+    node_balanced = (node_height_recursive(@root.left, 0) - node_height_recursive(@root.right, 0)).abs <= 1
+    left_balanced = root_node.left.nil? || balanced_recursive(root_node.left)
+    right_balanced = root_node.right.nil? || balanced_recursive(root_node.right)
+    node_balanced && left_balanced && right_balanced
   end
 
   def find_node_with_value(value)

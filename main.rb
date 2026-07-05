@@ -18,3 +18,8 @@ puts "\n---"
 test_tree.preorder { |node_data| print "#{node_data}, " }
 puts "\n---"
 test_tree.postorder { |node_data| print "#{node_data}, " }
+puts test_tree.balanced?
+test_tree.insert(101)
+test_tree.insert(102)
+test_tree.insert(103)
+puts test_tree.balanced?
