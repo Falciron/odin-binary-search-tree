@@ -16,28 +16,12 @@ class Tree
   end
 
   def insert(value)
-    return if include?(value)
-
     if @root.nil?
       @root = Node.new(value)
       return
     end
 
-    parent_node = @root
-
-    loop do
-      if value < parent_node.data && !parent_node.left.nil?
-        parent_node = parent_node.left
-      elsif value > parent_node.data && !parent_node.right.nil?
-        parent_node = parent_node.right
-      elsif value < parent_node.data
-        parent_node.left = Node.new(value)
-        return
-      else
-        parent_node.right = Node.new(value)
-        return
-      end
-    end
+    insert_recursive(@root, value)
   end
 
   def delete(value)
@@ -91,25 +75,12 @@ class Tree
   end
 
   def depth(value)
-    depth = 0
-    current_node = @root
-
-    until current_node.nil?
-      if value == current_node.data
-        return depth
-      elsif value < current_node.data
-        current_node = current_node.left
-      elsif value > current_node.data
-        current_node = current_node.right
-      end
-
-      depth += 1
-    end
-
-    nil
+    depth_recursive(@root, value, 0)
   end
 
   def balanced?
+    return true if @root.nil?
+
     balanced_recursive(@root)
   end
 
@@ -136,12 +107,5 @@ class Tree
     current_node = current_node.right
     current_node = current_node.left until current_node.nil? || current_node.left.nil?
     current_node
-  end
-
-  def find_node_with_value_recursive(current_node, value)
-    return current_node if current_node.nil? || current_node.data == value
-
-    current_node = value < current_node.data ? current_node.left : current_node.right
-    find_node_with_value_recursive(current_node, value)
   end
 end
