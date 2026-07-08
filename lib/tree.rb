@@ -1,15 +1,18 @@
 # frozen_string_literal: true
 
 require_relative 'node'
+require_relative 'recursive_tree_methods'
 
 # Represents a binary search tree data structure.
 class Tree
+  include RecursiveTreeMethods
+
   def initialize(numeric_array)
     @root = build_tree(numeric_array)
   end
 
   def include?(value)
-    !find_node_with_value(value).nil?
+    !find_node_with_value_recursive(@root, value).nil?
   end
 
   def insert(value)
@@ -37,7 +40,9 @@ class Tree
     end
   end
 
-  def delete(value); end
+  def delete(value)
+    delete_recursive(@root, value)
+  end
 
   def level_order
     return to_enum(:level_order) unless block_given?
@@ -79,7 +84,7 @@ class Tree
   end
 
   def height(value)
-    node_with_value = find_node_with_value(value)
+    node_with_value = find_node_with_value_recursive(@root, value)
     return if node_with_value.nil?
 
     node_height_recursive(node_with_value, 0)
@@ -108,7 +113,9 @@ class Tree
     balanced_recursive(@root)
   end
 
-  def rebalance; end
+  def rebalance
+    @root = build_tree(inorder)
+  end
 
   def pretty_print(node = @root, prefix = '', is_left: true)
     return unless node
@@ -125,66 +132,16 @@ class Tree
     build_tree_recursive(sorted_unique_array, 0, sorted_unique_array.size - 1)
   end
 
-  def build_tree_recursive(numeric_array, first_numeric, last_numeric)
-    return if first_numeric > last_numeric
-
-    mid_numeric = (first_numeric + ((last_numeric - first_numeric) / 2)).to_i
-    root = Node.new(numeric_array[mid_numeric])
-
-    root.left = build_tree_recursive(numeric_array, first_numeric, mid_numeric - 1)
-    root.right = build_tree_recursive(numeric_array, mid_numeric + 1, last_numeric)
-
-    root
+  def get_successor_node(current_node)
+    current_node = current_node.right
+    current_node = current_node.left until current_node.nil? || current_node.left.nil?
+    current_node
   end
 
-  def inorder_recursive(root_node, &block)
-    inorder_recursive(root_node.left, &block) unless root_node.left.nil?
-    yield root_node.data
-    inorder_recursive(root_node.right, &block) unless root_node.right.nil?
-  end
+  def find_node_with_value_recursive(current_node, value)
+    return current_node if current_node.nil? || current_node.data == value
 
-  def preorder_recursive(root_node, &block)
-    yield root_node.data
-    preorder_recursive(root_node.left, &block) unless root_node.left.nil?
-    preorder_recursive(root_node.right, &block) unless root_node.right.nil?
-  end
-
-  def postorder_recursive(root_node, &block)
-    postorder_recursive(root_node.left, &block) unless root_node.left.nil?
-    postorder_recursive(root_node.right, &block) unless root_node.right.nil?
-    yield root_node.data
-  end
-
-  def node_height_recursive(root_node, maximum_height)
-    return 0 if root_node.nil?
-
-    left_height = root_node.left.nil? ? 0 : 1 + node_height_recursive(root_node.left, maximum_height)
-    right_height = root_node.right.nil? ? 0 : 1 + node_height_recursive(root_node.right, maximum_height)
-    [left_height, right_height].max
-  end
-
-  def balanced_recursive(root_node)
-    return true if root_node.left.nil? && root_node.right.nil?
-
-    node_balanced = (node_height_recursive(@root.left, 0) - node_height_recursive(@root.right, 0)).abs <= 1
-    left_balanced = root_node.left.nil? || balanced_recursive(root_node.left)
-    right_balanced = root_node.right.nil? || balanced_recursive(root_node.right)
-    node_balanced && left_balanced && right_balanced
-  end
-
-  def find_node_with_value(value)
-    current_node = @root
-
-    until current_node.nil?
-      if value == current_node.data
-        return current_node
-      elsif value < current_node.data
-        current_node = current_node.left
-      elsif value > current_node.data
-        current_node = current_node.right
-      end
-    end
-
-    nil
+    current_node = value < current_node.data ? current_node.left : current_node.right
+    find_node_with_value_recursive(current_node, value)
   end
 end
